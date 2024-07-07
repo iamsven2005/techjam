@@ -1,5 +1,12 @@
 import { shoppingCartItemProps } from 'const';
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+
 // import _ from 'lodash';
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 export function currencyFormat(num: number | string) {
   return parseFloat(`${num}`)
