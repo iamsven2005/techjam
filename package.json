@@ -17,10 +17,13 @@
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
+    "@google/generative-ai": "^0.14.1",
     "@heroicons/react": "^2.0.18",
     "@mui/lab": "^5.0.0-alpha.93",
     "@prisma/client": "^4.5.0",
     "@radix-ui/react-dialog": "^1.1.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.1",
     "@tailwindcss/typography": "^0.5.9",
     "axios": "^1.1.3",

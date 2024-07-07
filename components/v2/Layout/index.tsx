@@ -1,5 +1,5 @@
 import * as React from 'react';
-import NextLink from 'next/link';
+import Link from 'next/link';
 import {
   Bars3Icon,
   MagnifyingGlassIcon,

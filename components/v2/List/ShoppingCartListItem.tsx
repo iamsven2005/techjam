@@ -9,6 +9,8 @@ import { shoppingCartState, currentUserIdState } from 'atoms';
 import { shoppingCartItemProps } from 'const';
 import { currencyFormat, calcCartItemTotalPrice } from 'lib/utils';
 import { buyBook } from 'lib/http';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 export default function ShoppingCartListItem(props: shoppingCartItemProps) {
   const {
@@ -124,25 +126,25 @@ export default function ShoppingCartListItem(props: shoppingCartItemProps) {
             </p>
             <div className='flex justify-between'>
               <div className='join'>
-                <button
+                <Button
                   className='btn btn-sm join-item'
                   disabled={quantity >= stock}
                   onClick={handleAddQty}
                 >
                   <PlusIcon className='stroke-current shrink-0 w-6 h-6' />
-                </button>
-                <input
-                  className='input input-sm input-bordered join-item w-12'
+                </Button>
+                <Input
+                  className='Input Input-sm Input-bordered join-item w-12'
                   value={quantity}
                   disabled
                 />
-                <button
+                <Button
                   className='btn btn-sm join-item'
                   disabled={quantity <= 1}
                   onClick={handleRemoveQty}
                 >
                   <MinusIcon className='stroke-current shrink-0 w-6 h-6' />
-                </button>
+                </Button>
               </div>
               <div className='flex justify-end gap-4'>
                 <div className='font-bold'>
@@ -156,18 +158,18 @@ export default function ShoppingCartListItem(props: shoppingCartItemProps) {
               </div>
             </div>
             <div className='flex justify-end gap-4'>
-              <button className='btn btn-sm btn-error' onClick={deleteItem}>
+              <Button className='btn btn-sm btn-error' onClick={deleteItem}>
                 <TrashIcon className='stroke-current shrink-0 w-6 h-6' />
                 Delete
-              </button>
-              <button
+              </Button>
+              <Button
                 className='btn btn-sm btn-info'
                 onClick={handleBuyClick}
                 disabled={loading}
               >
                 {loading && <span className='loading loading-spinner' />}
                 Proceed to Purchase
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -12,7 +12,6 @@ export interface BookListProps {
 
 export default function BookList(props: BookListProps) {
   const { page, pageSize } = props;
-  // const bookListLoadable = useRecoilValueLoadable(currentPageIdxQuery);
   const bookListLoadable = useRecoilValueLoadable(homePageQuery);
   const [homePageBookSum, setHomePageBookSum] =
     useRecoilState(homePageBookSumState);

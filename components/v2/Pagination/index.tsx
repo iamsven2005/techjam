@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Button } from '../ui/button';
 
 export interface PaginationProps {
   currentPage: number;
@@ -13,7 +14,7 @@ export default function Pagination(props: PaginationProps) {
     <div className='join'>
       {new Array(pages).fill(0).map((_, idx) => {
         return (
-          <button
+          <Button
             key={idx}
             className={`join-item btn btn-sm ${
               idx + 1 === currentPage ? 'btn-primary' : ''
@@ -23,7 +24,7 @@ export default function Pagination(props: PaginationProps) {
             }}
           >
             {idx + 1}
-          </button>
+          </Button>
         );
       })}
     </div>

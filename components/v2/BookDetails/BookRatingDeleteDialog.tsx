@@ -3,6 +3,7 @@ import { useSnackbar } from 'notistack';
 import NextRouter from 'next/router';
 
 import { deleteRating } from 'lib/http';
+import { Button } from '../ui/button';
 
 export interface BookRatingDeleteDialog {
   bookId: string;
@@ -50,16 +51,16 @@ const BookRatingDeleteDialog = React.forwardRef(
           <p className='py-4'>This operation is not reversible.</p>
 
           <div className='modal-action'>
-            {/* if there is a button in form, it will close the modal */}
-            <button className='btn'>Cancel</button>
-            <button
+            {/* if there is a Button in form, it will close the modal */}
+            <Button className='btn'>Cancel</Button>
+            <Button
               className='btn btn-error'
               disabled={loading}
               onClick={handleDelete}
             >
               {loading && <span className='loading loading-spinner' />}
               Delete
-            </button>
+            </Button>
           </div>
         </form>
       </dialog>

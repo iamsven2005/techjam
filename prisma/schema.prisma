@@ -93,9 +93,6 @@ model User {
 	@@map("users")
 }
 
-// Because special characters cannot be used in the schema definition of the data model.
-// We use `_nbsp_` to represent one space and use `_amp_` to represent `&`.
-
 enum BookType {
   Magazine
   Novel
@@ -108,4 +105,16 @@ enum BookType {
   Kids
   Sports
 	@@map("books_type")
+}
+model LoopCache {
+    id      BigInt   @id @default(autoincrement())
+    qnsans  QnsAns[]
+}
+
+model QnsAns {
+    id    BigInt   @id @default(autoincrement())
+    qns   String
+    ans   String?
+    loopCacheId BigInt
+    loopCache   LoopCache @relation(fields: [loopCacheId], references: [id])
 }

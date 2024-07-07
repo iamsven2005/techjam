@@ -23,15 +23,15 @@ CREATE TABLE `books` (
     `title` VARCHAR(100) NOT NULL,
     `type` ENUM('Magazine', 'Novel', 'Life', 'Arts', 'Comics', 'Education & Reference', 'Humanities & Social Sciences', 'Science & Technology', 'Kids', 'Sports') NOT NULL,
     `published_at` DATETIME(0) NOT NULL,
-    `stock` INTEGER NULL DEFAULT 0,
-    `price` DECIMAL(15, 2) NULL DEFAULT 0.0,
+    `stock` INTEGER NOT NULL DEFAULT 0,
+    `price` DECIMAL(15, 2) NOT NULL DEFAULT 0.0,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `orders` (
-    `id` BIGINT NOT NULL,
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
     `book_id` BIGINT NOT NULL,
     `user_id` BIGINT NOT NULL,
     `quality` TINYINT NOT NULL,
@@ -55,9 +55,26 @@ CREATE TABLE `ratings` (
 -- CreateTable
 CREATE TABLE `users` (
     `id` BIGINT NOT NULL,
-    `balance` DECIMAL(15, 2) NULL DEFAULT 0.0,
+    `balance` DECIMAL(15, 2) NOT NULL DEFAULT 0.0,
     `nickname` VARCHAR(100) NOT NULL,
 
     UNIQUE INDEX `nickname`(`nickname`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `LoopCache` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `QnsAns` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `qns` VARCHAR(191) NOT NULL,
+    `ans` VARCHAR(191) NOT NULL,
+    `loopCacheId` BIGINT NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

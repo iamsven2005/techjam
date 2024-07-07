@@ -4,6 +4,8 @@ import { useSnackbar } from 'notistack';
 import { BookDetailProps } from 'const';
 import { currencyFormat, checkIsValidInteger } from 'lib/utils';
 import { updateBookDetails } from 'lib/http';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 export interface BookInfoDialogProps {
   data: BookDetailProps;
@@ -67,9 +69,9 @@ const BookInfoDialog = React.forwardRef(
             <label className='label'>
               <span className='label-text'>Book Type</span>
             </label>
-            <input
+            <Input
               type='text'
-              className='input input-sm input-bordered w-full max-w-xs'
+              className='Input Input-sm Input-bordered w-full max-w-xs'
               value={data.type}
               disabled
             />
@@ -78,9 +80,9 @@ const BookInfoDialog = React.forwardRef(
             <label className='label'>
               <span className='label-text'>Book Title</span>
             </label>
-            <input
+            <Input
               type='text'
-              className='input input-sm input-bordered w-full max-w-xs'
+              className='Input Input-sm Input-bordered w-full max-w-xs'
               value={data.title}
               disabled
             />
@@ -89,9 +91,9 @@ const BookInfoDialog = React.forwardRef(
             <label className='label'>
               <span className='label-text'>Publication Date</span>
             </label>
-            <input
+            <Input
               type='text'
-              className='input input-sm input-bordered w-full max-w-xs'
+              className='Input Input-sm Input-bordered w-full max-w-xs'
               value={new Date(data.publishedAt).toLocaleDateString()}
               disabled
             />
@@ -100,9 +102,9 @@ const BookInfoDialog = React.forwardRef(
             <label className='label'>
               <span className='label-text'>Price</span>
             </label>
-            <input
+            <Input
               type='text'
-              className='input input-sm input-bordered w-full max-w-xs'
+              className='Input Input-sm Input-bordered w-full max-w-xs'
               value={`$ ${currencyFormat(data.price)}`}
               disabled
             />
@@ -111,9 +113,9 @@ const BookInfoDialog = React.forwardRef(
             <label className='label'>
               <span className='label-text'>Stock</span>
             </label>
-            <input
+            <Input
               type='text'
-              className='input input-sm input-bordered w-full max-w-xs'
+              className='Input Input-sm Input-bordered w-full max-w-xs'
               defaultValue={data.stock}
               onChange={handleUpdateStock}
             />
@@ -126,16 +128,16 @@ const BookInfoDialog = React.forwardRef(
             )}
           </div>
           <div className='modal-action'>
-            {/* if there is a button in form, it will close the modal */}
-            <button className='btn'>Cancel</button>
-            <button
+            {/* if there is a Button in form, it will close the modal */}
+            <Button className='btn'>Cancel</Button>
+            <Button
               className='btn btn-info'
               disabled={!isStockValid || isUpdating || stock === data.stock}
               onClick={handleUpdate}
             >
               {isUpdating && <span className='loading loading-spinner' />}
               Update
-            </button>
+            </Button>
           </div>
         </form>
       </dialog>

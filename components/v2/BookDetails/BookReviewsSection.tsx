@@ -8,6 +8,7 @@ import { roundHalf } from 'lib/utils';
 import HalfRating from 'components/v2/Rating/HalfRating';
 import BookRatingDeleteDialog from 'components/v2/BookDetails/BookRatingDeleteDialog';
 import BookAddRatingDialog from 'components/v2/BookDetails/BookAddRatingDialog';
+import { Button } from "components/v2/ui/button";
 
 export default function BookReviewsSection() {
   const addRatingDialogRef = React.useRef<HTMLDialogElement>(null);
@@ -27,14 +28,14 @@ export default function BookReviewsSection() {
                 <p className='py-6'>
                   <ReviewOverview content={data.content} />
                 </p>
-                <button
+                <Button
                   className='btn btn-info'
                   onClick={() => {
                     addRatingDialogRef?.current?.showModal();
                   }}
                 >
                   Add Review
-                </button>
+                </Button>
               </div>
               <div className='overflow-x-auto mt-16'>
                 {data?.content?.length > 0 && (
@@ -188,12 +189,12 @@ const ReviewsTable = (props: {
                   </td>
                   <td>{`${new Date(item.ratedAt).toLocaleDateString()}`}</td>
                   <th>
-                    <button
+                    <Button
                       className='btn btn-error btn-xs'
                       onClick={handleDelete(item.userId)}
                     >
                       delete
-                    </button>
+                    </Button>
                   </th>
                 </tr>
               </>

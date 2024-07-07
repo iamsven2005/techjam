@@ -4,6 +4,7 @@ import NextRouter from 'next/router';
 
 import { addRatingByBookID } from 'lib/http';
 import HalfRating from 'components/v2/Rating/HalfRating';
+import { Button } from '../ui/button';
 
 export interface BookAddRatingDialog {
   bookId: string;
@@ -50,22 +51,22 @@ const BookAddRatingDialog = React.forwardRef(
 
     return (
       <dialog id={bookId} className='modal' ref={ref}>
-        <form method='dialog' className='modal-box'>
+        <form method='dialog' className='modal-box m-5 p-5'>
           <h3 className='font-bold text-lg pb-6'>Add Rating</h3>
           <HalfRating onChange={handleChange} />
           <span className='pl-2'>{value}</span>
 
           <div className='modal-action'>
-            {/* if there is a button in form, it will close the modal */}
-            <button className='btn'>Cancel</button>
-            <button
+            {/* if there is a Button in form, it will close the modal */}
+            <Button className='btn'>Cancel</Button>
+            <Button
               className='btn btn-error'
               disabled={loading || !value}
               onClick={handleAdd}
             >
               {loading && <span className='loading loading-spinner' />}
               Save
-            </button>
+            </Button>
           </div>
         </form>
       </dialog>

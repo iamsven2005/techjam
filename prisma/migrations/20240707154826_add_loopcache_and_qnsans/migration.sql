@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `QnsAns` MODIFY `ans` VARCHAR(191) NULL;
