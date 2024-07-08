@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { Book } from "@prisma/client";
 
 const model = new GoogleGenerativeAI(
-	"AIzaSyCqWepOtc4TAN_-s3JiWGXjVzbrZ4ADXXY",
+	process.env.NEXT_PUBLIC_GEMINI_API_KEY || "",
 ).getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export type LoopCache = {
