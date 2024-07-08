@@ -13,6 +13,7 @@ export interface BookProps {
 	authors: { author: AuthorType }[];
 	averageRating: number;
 	ratings: number;
+	description: string;
 }
 
 export interface shoppingCartItemProps extends BookProps {

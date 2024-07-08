@@ -75,23 +75,24 @@ export async function fetchBookRatingsById(id: string): Promise<{
 }
 
 export async function updateBookDetails(
-	id: string,
-	params: Partial<BookDetailProps>,
+    id: string,
+    params: Partial<BookDetailProps>
 ): Promise<{
-	content?: { data: BookDetailProps; message: string };
-	error?: any;
+    content?: { data: BookDetailProps; message: string };
+    error?: any;
 }> {
-	try {
-		const response = await axios.put(`/api/books/${id}`, params);
-		if (response.status !== 200) {
-			throw new Error(`${response.status} - ${response.data}`);
-		}
-		return { content: response.data };
-	} catch (error) {
-		console.error(error);
-		return { error };
-	}
+    try {
+        const response = await axios.put(`/api/books/${id}`, params);
+        if (response.status !== 200) {
+            throw new Error(`${response.status} - ${response.data}`);
+        }
+        return { content: response.data };
+    } catch (error) {
+        console.error(error);
+        return { error };
+    }
 }
+
 
 export async function addRatingByBookID(
 	bookID: string,

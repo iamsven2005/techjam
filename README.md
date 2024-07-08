@@ -1,8 +1,8 @@
-# TikTok TechJam
+# Product Assistant Bot
 
 A curated personal AI chatbot for products that connects the sellers and the buyers!
 
-> Do you want to try it out? [Click here](https://techjam-sigma.vercel.app)!
+> Do you want to try it firsthand? [Click here](https://techjam-sigma.vercel.app)!
 
 ## 🫂 Project Information
 
@@ -30,3 +30,6 @@ A curated personal AI chatbot for products that connects the sellers and the buy
 ## 📜 License
 
 Distributed under the Apache-2.0 License. See [LICENSE](./LICENSE) for more information.
+
+python -m venv venv
+source venv/bin/activate

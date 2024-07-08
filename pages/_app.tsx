@@ -22,7 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <RecoilRoot>
       <DebugObserver />
       <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
-        <Component {...pageProps} />
+        <Component {...pageProps}/>
       </SnackbarProvider>
     </RecoilRoot>
   );

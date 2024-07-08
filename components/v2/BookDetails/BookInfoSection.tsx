@@ -3,11 +3,11 @@ import type { Book } from "@prisma/client";
 import BookInfoDialog from "components/v2/BookDetails/BookInfoDialog";
 import type { BookDetailProps } from "const";
 import {
-  type LoopCache,
-  type QnsAns,
-  getAnswer,
-  getBookCacheLocal,
-  setCacheLocal,
+	type LoopCache,
+	type QnsAns,
+	getAnswer,
+	getBookCacheLocal,
+	setCacheLocal,
 } from "lib/aiqns";
 import { currencyFormat } from "lib/utils";
 import Image from "next/image";
@@ -18,22 +18,33 @@ import { useRecoilValueLoadable } from "recoil";
 import { bookInfoQuery } from "selectors";
 import { Button } from "../ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
 } from "../ui/dialog";
 import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
+import { Preview } from "../Rating/preview";
+
+interface ButtonClickTimestamp {
+	[key: number]: number;
+}
 
 export default function BookInfoSection() {
 	const [bookDetailsState, setBookDetailsState] = React.useState<
 		BookDetailProps | undefined
 	>();
 	const editBookDetailDialogRef = React.useRef<HTMLDialogElement>(null);
-	const [qnsAnsOutput, setQnsAnsOutput] = useState<string[]>([]);
+	const [qnsAnsOutput, setQnsAnsOutput] = useState<{
+		isBot: boolean;
+		text: string;
+	}[]>([]);
 	const [qnsList, setQnsList] = useState<QnsAns[]>([]);
+	const [buttonClickTimestamps, setButtonClickTimestamps] = useState<ButtonClickTimestamp>({});
 
 	const bookDetailsLodable = useRecoilValueLoadable(bookInfoQuery);
 
@@ -71,7 +82,13 @@ export default function BookInfoSection() {
 					cache || ({} as LoopCache),
 					noAns,
 				);
-				setQnsAnsOutput([...qnsAnsOutput, qns, ans]);
+				setQnsAnsOutput([...qnsAnsOutput, {
+					isBot: false,
+					text: qns,
+				}, {
+					isBot: true,
+					text: ans,
+				}]);
 			};
 
 			// biome-ignore lint/correctness/noSwitchDeclarations:
@@ -96,12 +113,20 @@ export default function BookInfoSection() {
 				setQnsList(cache?.qnsans ?? []);
 			};
 
+			const updateButtonTimestamp = (index: number) => {
+				setButtonClickTimestamps((prevTimestamps) => ({
+					...prevTimestamps,
+					[index]: Date.now(),
+				}));
+			};
+
 			// biome-ignore lint/correctness/noSwitchDeclarations:
-			const buttons = shuffleArray([
+			const buttons = [
 				<Button
 					className="w-32 btn btn-info"
 					onClick={() => {
 						editBookDetailDialogRef.current?.showModal();
+						updateButtonTimestamp(0);
 					}}
 					key="edit-details"
 				>
@@ -109,53 +134,63 @@ export default function BookInfoSection() {
 				</Button>,
 				<Dialog key="chat-ai">
 					<DialogTrigger>
-						<Button>Chat with AI</Button>
+						<Button onClick={() => {
+							setQnsAnsOutput([]);
+							updateButtonTimestamp(1);
+						}}>Chat with AI</Button>
 					</DialogTrigger>
 					<DialogContent className="modal-box">
 						<DialogHeader>Chat with AI</DialogHeader>
 						<DialogDescription>
-							{qnsAnsOutput.map((text) => (
-								<p key={text}>{text}</p>
+							{qnsAnsOutput.map((chat) => (
+								<React.Fragment key={chat.isBot + chat.text}>
+									<div className={"font-bold"}>{chat.isBot ? "Bot" : "User"}</div>
+									<div>{chat.text}</div>
+									<Separator />
+								</React.Fragment>
 							))}
 						</DialogDescription>
 						<Input
 							type="text"
 							id="ai_qns_Input"
 							placeholder="Chat now"
-							className="w-full max-w-xs Input Input-bordered Input-sm"
 							onKeyUp={qnsInputKeyEnter}
 						/>
 					</DialogContent>
 				</Dialog>,
 				<Dialog key="answer-questions">
 					<DialogTrigger>
-						<Button onClick={loadCache}>Answer Questions</Button>
+						<Button onClick={() => {
+							loadCache();
+							updateButtonTimestamp(2);
+						}}>Answer Questions</Button>
 					</DialogTrigger>
 					<DialogContent className="modal-box">
 						<DialogHeader className="text-lg font-bold">
 							Answer Questions
 						</DialogHeader>
-						<DialogDescription className="py-4">
+						<DialogDescription className="py-4 flex flex-col">
 							{qnsList.map((qnsans, index) => (
 								<React.Fragment key={index}>
 									{qnsans.ans ? null : (
 										<Dialog>
 											<DialogTrigger>
-												<Button>{qnsans.qns}</Button>
+												<Button className={"w-full"}>{qnsans.qns}</Button>
 											</DialogTrigger>
 											<DialogContent>
 												<DialogHeader>
 													<DialogTitle>{qnsans.qns}</DialogTitle>
-													<DialogDescription>
-														Please answer this question!
+													<DialogDescription className="py-4">
+														Please answer this question.
 													</DialogDescription>
-													<Input
-														type="text"
-														id="ai_ans_input"
-														placeholder="Answer Question"
-														className="w-full max-w-xs Input Input-bordered Input-sm"
-														onKeyUp={(e) => ansInputKeyEnter(e, index)}
-													/>
+													<DialogFooter>
+														<Input
+															type="text"
+															id="ai_ans_input"
+															placeholder="Please enter your answer"
+															onKeyUp={(e) => ansInputKeyEnter(e, index)}
+														/>
+													</DialogFooter>
 												</DialogHeader>
 											</DialogContent>
 										</Dialog>
@@ -165,7 +200,13 @@ export default function BookInfoSection() {
 						</DialogDescription>
 					</DialogContent>
 				</Dialog>,
-			]);
+			];
+
+			const sortedButtons = [...buttons].sort((a, b) => {
+				const indexA = buttons.indexOf(a);
+				const indexB = buttons.indexOf(b);
+				return (buttonClickTimestamps[indexB] || 0) - (buttonClickTimestamps[indexA] || 0);
+			});
 
 			return (
 				<>
@@ -212,7 +253,12 @@ export default function BookInfoSection() {
 									<span className="pr-4 text-lg font-bold">In stock:</span>
 									{bookDetailsState?.stock || data.stock}
 								</p>
-								<div className="flex flex-wrap gap-5">{buttons}</div>
+								<p>
+									<span className="pr-4 text-lg font-bold">Description:</span>
+									<Preview value={bookDetailsState?.description || data.description} />
+
+								</p>
+								<div className="flex flex-wrap gap-5">{sortedButtons}</div>
 							</div>
 						</div>
 					</div>

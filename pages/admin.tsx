@@ -17,6 +17,7 @@ import { CartesianGrid, XAxis, Line, LineChart } from "recharts"
 import { ChartTooltipContent, ChartTooltip, ChartContainer } from "components/v2/ui/chart"
 import React from "react"
 import AI from "./actions"
+import { Home } from "lucide-react"
 const adviceList = [
     "Regularly backup your data.",
     "Monitor user activity logs.",
@@ -49,26 +50,26 @@ export default function Component() {
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <TooltipProvider>
             <Link
-              href="#"
+              href="/admin"
               className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
               prefetch={false}
             >
-              <BookIcon className="h-4 w-4 transition-all group-hover:scale-110" />
+              <Home className="h-4 w-4 transition-all group-hover:scale-110" />
               <span className="sr-only">Bookstore</span>
             </Link>
             
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/"
+                  href="/todo"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                   prefetch={false}
                 >
                   <FilesIcon className="h-5 w-5" />
-                  <span className="sr-only">Home</span>
+                  <span className="sr-only">Todo List</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Home</TooltipContent>
+              <TooltipContent side="right">Todo List</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </nav>

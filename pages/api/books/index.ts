@@ -8,7 +8,7 @@ const DEFAULT_PAGE_SIZE = 8;
 
 enum SortType {
   PRICE = 'price',
-  PUBLISHED_AT = 'publishedAt'
+  PUBLISHED_AT = 'publishedAt',
 };
 enum SortOrder {
   ASC = 'asc',
