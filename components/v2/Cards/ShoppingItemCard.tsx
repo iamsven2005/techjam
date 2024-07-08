@@ -77,13 +77,15 @@ export default function ShoopingItemCard(props: BookProps) {
           {authors.map((author) => author.author.name).join(`, `)}
         </p>
         <HalfRating rating={averageRating} disabled />
-        <div className='card-actions justify-end'>
+        <div className='gap-5 flex m-5'>
           <Button className='btn' onClick={addItem}>
             ${currencyFormat(price)}
             <ShoppingCartIcon className='h-6 w-6' />
           </Button>
-          <Link href={`/book/${id}`} className='btn btn-info'>
-            View Details
+          <Link href={`/book/${id}`}>
+          <Button>
+          View Details
+          </Button>
           </Link>
         </div>
       </CardContent>
