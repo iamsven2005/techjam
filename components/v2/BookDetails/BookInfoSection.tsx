@@ -1,174 +1,237 @@
-import * as React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import {
-  useRecoilState,
-  useRecoilValue,
-  useRecoilValueLoadable,
-  useSetRecoilState,
-} from 'recoil';
-import { HomeIcon, BookmarkIcon } from '@heroicons/react/24/outline';
+import { BookmarkIcon, HomeIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import Link from "next/link";
+import * as React from "react";
+import { useRecoilValueLoadable } from "recoil";
 
-import { bookInfoQuery, bookRatingQuery } from 'selectors';
-import { BookDetailProps, BookRatingsProps, starLabels } from 'const';
-import { currencyFormat, roundHalf } from 'lib/utils';
-import BookInfoDialog from 'components/v2/BookDetails/BookInfoDialog';
-import { Button } from '../ui/button';
-import { useState } from 'react';
-import { getAnswer, getCache, getCacheLocal } from 'lib/aiqns';
-import { Book } from '@prisma/client';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from '../ui/dialog';
-import { Input } from '../ui/input';
+import type { Book } from "@prisma/client";
+import BookInfoDialog from "components/v2/BookDetails/BookInfoDialog";
+import type { BookDetailProps } from "const";
+import {
+  LoopCache,
+  QnsAns,
+  getAnswer,
+  getBookCacheLocal,
+  setCacheLocal,
+} from "lib/aiqns";
+import { currencyFormat } from "lib/utils";
+import { useState } from "react";
+import { bookInfoQuery } from "selectors";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Input } from "../ui/input";
 
 export default function BookInfoSection() {
-  const [bookDetailsState, setBookDetailsState] = React.useState<
-    BookDetailProps | undefined
-  >();
-  const editBookDetailDialogRef = React.useRef<HTMLDialogElement>(null);
-  const [qnsAnsOutput, setQnsAnsOutput] = useState<string[]>([]);
-  const [qnsList, setQnsList] = useState<string[]>([]);
+	const [bookDetailsState, setBookDetailsState] = React.useState<
+		BookDetailProps | undefined
+	>();
+	const editBookDetailDialogRef = React.useRef<HTMLDialogElement>(null);
+	const [qnsAnsOutput, setQnsAnsOutput] = useState<string[]>([]);
+	const [qnsList, setQnsList] = useState<QnsAns[]>([]);
 
-  const bookDetailsLodable = useRecoilValueLoadable(bookInfoQuery);
+	const bookDetailsLodable = useRecoilValueLoadable(bookInfoQuery);
 
-  const handleUpdate = (data: BookDetailProps) => {
-    setBookDetailsState(data);
-  };
+	const handleUpdate = (data: BookDetailProps) => {
+		setBookDetailsState(data);
+	};
 
-  switch (bookDetailsLodable.state) {
-    case 'hasValue':
-      const data = bookDetailsLodable.contents.content;
-      const qnsInputKeyEnter = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key !== 'Enter') return;
-        const qns = (document.getElementById('ai_qns_Input') as HTMLInputElement).value;
-        const noAns = "There is no answer. We will try to ask the community for you."
-        const ans = await getAnswer(qns, data as unknown as Book, {
-          qnsans: [],
-          id: 0,
-          bookId: 0
-        }, noAns);
-        setQnsAnsOutput([...qnsAnsOutput, qns, ans]);
-      }
+	switch (bookDetailsLodable.state) {
+		case "hasValue":
+			// biome-ignore lint/correctness/noSwitchDeclarations:
+			const data = bookDetailsLodable.contents.content;
+			// biome-ignore lint/correctness/noSwitchDeclarations:
+			const qnsInputKeyEnter = async (
+				event: React.KeyboardEvent<HTMLInputElement>,
+			) => {
+				if (event.key !== "Enter") return;
+				const qns = (
+					document.getElementById("ai_qns_Input") as HTMLInputElement
+				).value;
+				const noAns =
+					"There is no answer. We will try to ask the community for you.";
+				const cache = getBookCacheLocal(Number(data.id));
+				const ans = await getAnswer(
+					qns,
+					data as unknown as Book,
+					cache || ({} as LoopCache),
+					noAns,
+				);
+				setQnsAnsOutput([...qnsAnsOutput, qns, ans]);
+			};
 
-      const ansInputKeyEnter = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key !== 'Enter') return;
-        const ans = (document.getElementById('ai_ans_Input') as HTMLInputElement).value;
-        const cache = getCacheLocal();
-        // im dying
-      }
-      return (
-        <>
-          <div className='text-sm breadcrumbs'>
-            <ul>
-              <li>
-                <Link href='/'>
-                  <HomeIcon className='w-4 h-4' />
-                  Book
-                </Link>
-              </li>
-              <li>
-                <BookmarkIcon className='w-4 h-4' />
-                {data.title}
-              </li>
-            </ul>
-          </div>
+			// biome-ignore lint/correctness/noSwitchDeclarations:
+			const ansInputKeyEnter = async (
+				event: React.KeyboardEvent<HTMLInputElement>,
+				index: number,
+			) => {
+				if (event.key !== "Enter") return;
+				const ans = (
+					document.getElementById("ai_ans_input") as HTMLInputElement
+				).value;
+				const list = qnsList;
+				list[index].ans = ans;
+				setQnsList(list);
+				setCacheLocal(Number(data.id), Number(data.id), list);
+        alert("Answer saved!")
+			};
 
-          <div className=' m-5 p-5 h-auto justify-start shadow-xl rounded-box'>
-            <div className='hero-content flex-col lg:flex-row'>
-              <Image
-                src={`https://picsum.photos/seed/${data.id}/200/280`}
-                alt={`book image`}
-                width={200}
-                height={280}
-              />
-              <div className='flex flex-col gap-2'>
-                <h1 className='text-5xl font-bold'>{data.title}</h1>
-                <p className='pt-6'>
-                  <span className='text-lg font-bold pr-4'>Type:</span>
-                  {data.type.replaceAll(`_nbsp_`, ` `).replaceAll(`_amp_`, `&`)}
-                </p>
-                <p>
-                  <span className='text-lg font-bold pr-4'>
-                    Publication date:
-                  </span>
-                  {new Date(data.publishedAt).toLocaleDateString()}
-                </p>
-                <p>
-                  <span className='text-lg font-bold pr-4'>Price:</span>
-                  {`$ ${currencyFormat(data.price)}`}
-                </p>
-                <p>
-                  <span className='text-lg font-bold pr-4'>In stock:</span>
-                  {bookDetailsState?.stock || data.stock}
-                </p>
-                <div className="flex flex-wrap gap-5">
-                <Button
-                  className='btn btn-info w-32'
-                  onClick={() => {
-                    editBookDetailDialogRef.current?.showModal();
-                  }}
-                >
-                  Edit Details
-                </Button>
+			// biome-ignore lint/correctness/noSwitchDeclarations:
+			const loadCache = () => {
+				const cache = getBookCacheLocal(Number(data.id));
+				setQnsList(cache?.qnsans ?? []);
+			};
+			return (
+				<>
+					<div className="text-sm breadcrumbs">
+						<ul>
+							<li>
+								<Link href="/">
+									<HomeIcon className="w-4 h-4" />
+									Book
+								</Link>
+							</li>
+							<li>
+								<BookmarkIcon className="w-4 h-4" />
+								{data.title}
+							</li>
+						</ul>
+					</div>
 
-                <Dialog>
-                <DialogTrigger>
-                  <Button>
-                  Chat with AI
+					<div className="justify-start h-auto p-5 m-5 shadow-xl rounded-box">
+						<div className="flex-col hero-content lg:flex-row">
+							<Image
+								src={`https://picsum.photos/seed/${data.id}/200/280`}
+								alt={`book image`}
+								width={200}
+								height={280}
+							/>
+							<div className="flex flex-col gap-2">
+								<h1 className="text-5xl font-bold">{data.title}</h1>
+								<p className="pt-6">
+									<span className="pr-4 text-lg font-bold">Type:</span>
+									{data.type.replaceAll(`_nbsp_`, ` `).replaceAll(`_amp_`, `&`)}
+								</p>
+								<p>
+									<span className="pr-4 text-lg font-bold">
+										Publication date:
+									</span>
+									{new Date(data.publishedAt).toLocaleDateString()}
+								</p>
+								<p>
+									<span className="pr-4 text-lg font-bold">Price:</span>
+									{`$ ${currencyFormat(data.price)}`}
+								</p>
+								<p>
+									<span className="pr-4 text-lg font-bold">In stock:</span>
+									{bookDetailsState?.stock || data.stock}
+								</p>
+								<div className="flex flex-wrap gap-5">
+									<Button
+										className="w-32 btn btn-info"
+										onClick={() => {
+											editBookDetailDialogRef.current?.showModal();
+										}}
+									>
+										Edit Details
+									</Button>
 
-                  </Button>
-                    
-                </DialogTrigger>
-                  <DialogContent className="modal-box">
-                    <DialogHeader>
-                    Chat with AI
+									<Dialog>
+										<DialogTrigger>
+											<Button>Chat with AI</Button>
+										</DialogTrigger>
+										<DialogContent className="modal-box">
+											<DialogHeader>Chat with AI</DialogHeader>
+											<DialogDescription>
+												{qnsAnsOutput.map((text) => (
+													<p key={text}>{text}</p>
+												))}
+											</DialogDescription>
+											<Input
+												type="text"
+												id="ai_qns_Input"
+												placeholder="Chat now"
+												className="w-full max-w-xs Input Input-bordered Input-sm"
+												onKeyUp={qnsInputKeyEnter}
+											/>
+										</DialogContent>
+									</Dialog>
 
-                    </DialogHeader>
-                    <DialogDescription>
-                      {qnsAnsOutput.map((text) => (
-                        <p key={text}>{text}</p>
-                      ))}</DialogDescription>
-                    <Input type="text" id="ai_qns_Input" placeholder="Chat now" className="Input Input-bordered Input-sm w-full max-w-xs" onKeyUp={qnsInputKeyEnter} />
-                  </DialogContent>
-                </Dialog>
+									<Dialog>
+										<DialogTrigger>
+											<Button onClick={loadCache}>Answer Questions</Button>
+										</DialogTrigger>
+										<DialogContent className="modal-box">
+											<DialogHeader className="text-lg font-bold">
+												Answer Questions
+											</DialogHeader>
+											<DialogDescription className="py-4">
+												{qnsList.map((qnsans, index) => (
+													<>
+														{qnsans.ans ? (
+															// biome-ignore lint/correctness/useJsxKeyInIterable:
+															<></>
+														) : (
+															// biome-ignore lint/suspicious/noArrayIndexKey:
+															<Dialog key={index}>
+																<DialogTrigger>
+																	<Button>{qnsans.qns}</Button>
+																</DialogTrigger>
+																<DialogContent>
+																	<DialogHeader>
+																		<DialogTitle>{qnsans.qns}</DialogTitle>
+																		<DialogDescription>
+																			Please answer this question!
+																		</DialogDescription>
+																		<Input
+																			type="text"
+																			id="ai_ans_input"
+																			placeholder="Answer Question"
+																			className="w-full max-w-xs Input Input-bordered Input-sm"
+																			onKeyUp={(e) =>
+																				ansInputKeyEnter(e, index)
+																			}
+																		/>
+																	</DialogHeader>
+																</DialogContent>
+															</Dialog>
+														)}
+													</>
+												))}
+											</DialogDescription>
+										</DialogContent>
+									</Dialog>
+								</div>
+							</div>
+						</div>
+					</div>
 
-                <Dialog>
-                <DialogTrigger>
-                  <Button>
-                    Answer Questions
-                  </Button>
-                </DialogTrigger>
-                  <DialogContent className="modal-box">
-                    <DialogHeader className="font-bold text-lg">Answer Questions</DialogHeader>
-                    <DialogDescription className="py-4">Press ESC key or click outside to close</DialogDescription>
-                    <Input type="text" id="ai_ans_Input" placeholder="Chat now" className="Input Input-bordered Input-sm w-full max-w-xs" onKeyUp={ansInputKeyEnter} />
-                  </DialogContent>
-                </Dialog>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-
-          {data && (
-            <BookInfoDialog
-              key={`${data.id}-${data.stock}`}
-              id='edit_book_detail'
-              ref={editBookDetailDialogRef}
-              data={data}
-              onSuccess={handleUpdate}
-            />
-          )}
-        </>
-      );
-    case 'loading':
-      return (
-        <>
-          <div className='flex items-center justify-center'>
-            <span className='loading loading-bars loading-lg'></span>
-          </div>
-        </>
-      );
-    case 'hasError':
-      throw bookDetailsLodable.contents;
-  }
+					{data && (
+						<BookInfoDialog
+							key={`${data.id}-${data.stock}`}
+							id="edit_book_detail"
+							ref={editBookDetailDialogRef}
+							data={data}
+							onSuccess={handleUpdate}
+						/>
+					)}
+				</>
+			);
+		case "loading":
+			return (
+				<>
+					<div className="flex items-center justify-center">
+						<span className="loading loading-bars loading-lg"></span>
+					</div>
+				</>
+			);
+		case "hasError":
+			throw bookDetailsLodable.contents;
+	}
 }
