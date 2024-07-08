@@ -13,7 +13,7 @@
     "stu": "prisma studio",
     "setup": "NODE_OPTIONS='--experimental-json-modules' node ./scripts/setup.mjs",
     "start": "next start",
-    "vercel-build": "export DATABASE_URL=$(node ./scripts/env.mjs) && pnpm run prisma:deploy && pnpm run setup && pnpm run build"
+    "vercel-build": "export DATABASE_URL=$(node ./scripts/env.mjs) && pnpm run mig && pnpm run setup && pnpm run build"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
