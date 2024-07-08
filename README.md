@@ -2,6 +2,8 @@
 
 A curated personal AI chatbot for products that connects the sellers and the buyers!
 
+> Do you want to try it out? [Click here](https://techjam-sigma.vercel.app)!
+
 ## 🫂 Project Information
 
 ### Team Members
@@ -18,7 +20,6 @@ A curated personal AI chatbot for products that connects the sellers and the buy
 
 - [Node.js](https://nodejs.org) 20+
 - [pnpm](https://pnpm.io) 9+
-- [Python](https://python.org) 3.11+
 
 ### Installation
 
