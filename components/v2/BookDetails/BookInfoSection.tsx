@@ -1,21 +1,36 @@
 import { BookmarkIcon, HomeIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
-import Link from "next/link";
-import * as React from "react";
-import { useRecoilValueLoadable } from "recoil";
 import type { Book } from "@prisma/client";
 import BookInfoDialog from "components/v2/BookDetails/BookInfoDialog";
 import type { BookDetailProps } from "const";
-import { LoopCache, QnsAns, getAnswer, getBookCacheLocal, setCacheLocal } from "lib/aiqns";
+import {
+  type LoopCache,
+  type QnsAns,
+  getAnswer,
+  getBookCacheLocal,
+  setCacheLocal,
+} from "lib/aiqns";
 import { currencyFormat } from "lib/utils";
+import Image from "next/image";
+import Link from "next/link";
+import * as React from "react";
 import { useState } from "react";
+import { useRecoilValueLoadable } from "recoil";
 import { bookInfoQuery } from "selectors";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 import { Input } from "../ui/input";
 
 export default function BookInfoSection() {
-	const [bookDetailsState, setBookDetailsState] = React.useState<BookDetailProps | undefined>();
+	const [bookDetailsState, setBookDetailsState] = React.useState<
+		BookDetailProps | undefined
+	>();
 	const editBookDetailDialogRef = React.useRef<HTMLDialogElement>(null);
 	const [qnsAnsOutput, setQnsAnsOutput] = useState<string[]>([]);
 	const [qnsList, setQnsList] = useState<QnsAns[]>([]);
@@ -38,18 +53,33 @@ export default function BookInfoSection() {
 		case "hasValue":
 			const data = bookDetailsLodable.contents.content;
 
-			const qnsInputKeyEnter = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+			const qnsInputKeyEnter = async (
+				event: React.KeyboardEvent<HTMLInputElement>,
+			) => {
 				if (event.key !== "Enter") return;
-				const qns = (document.getElementById("ai_qns_Input") as HTMLInputElement).value;
-				const noAns = "There is no answer. We will try to ask the community for you.";
+				const qns = (
+					document.getElementById("ai_qns_Input") as HTMLInputElement
+				).value;
+				const noAns =
+					"There is no answer. We will try to ask the community for you.";
 				const cache = getBookCacheLocal(Number(data.id));
-				const ans = await getAnswer(qns, data as unknown as Book, cache || ({} as LoopCache), noAns);
+				const ans = await getAnswer(
+					qns,
+					data as unknown as Book,
+					cache || ({} as LoopCache),
+					noAns,
+				);
 				setQnsAnsOutput([...qnsAnsOutput, qns, ans]);
 			};
 
-			const ansInputKeyEnter = async (event: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+			const ansInputKeyEnter = async (
+				event: React.KeyboardEvent<HTMLInputElement>,
+				index: number,
+			) => {
 				if (event.key !== "Enter") return;
-				const ans = (document.getElementById("ai_ans_input") as HTMLInputElement).value;
+				const ans = (
+					document.getElementById("ai_ans_input") as HTMLInputElement
+				).value;
 				const list = qnsList;
 				list[index].ans = ans;
 				setQnsList(list);
@@ -97,7 +127,9 @@ export default function BookInfoSection() {
 						<Button onClick={loadCache}>Answer Questions</Button>
 					</DialogTrigger>
 					<DialogContent className="modal-box">
-						<DialogHeader className="text-lg font-bold">Answer Questions</DialogHeader>
+						<DialogHeader className="text-lg font-bold">
+							Answer Questions
+						</DialogHeader>
 						<DialogDescription className="py-4">
 							{qnsList.map((qnsans, index) => (
 								<React.Fragment key={index}>
@@ -109,7 +141,9 @@ export default function BookInfoSection() {
 											<DialogContent>
 												<DialogHeader>
 													<DialogTitle>{qnsans.qns}</DialogTitle>
-													<DialogDescription>Please answer this question!</DialogDescription>
+													<DialogDescription>
+														Please answer this question!
+													</DialogDescription>
 													<Input
 														type="text"
 														id="ai_ans_input"
@@ -160,7 +194,9 @@ export default function BookInfoSection() {
 									{data.type.replaceAll(`_nbsp_`, ` `).replaceAll(`_amp_`, `&`)}
 								</p>
 								<p>
-									<span className="pr-4 text-lg font-bold">Publication date:</span>
+									<span className="pr-4 text-lg font-bold">
+										Publication date:
+									</span>
 									{new Date(data.publishedAt).toLocaleDateString()}
 								</p>
 								<p>
