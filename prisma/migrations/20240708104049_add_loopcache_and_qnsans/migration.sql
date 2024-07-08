@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE `books` ADD COLUMN `description` VARCHAR(191) NULL;
+
+-- AlterTable
+ALTER TABLE `users` ADD COLUMN `product` VARCHAR(191) NULL,
+    ADD COLUMN `ui1` BIGINT NULL,
+    ADD COLUMN `ui2` BIGINT NULL,
+    ADD COLUMN `ui3` BIGINT NULL;

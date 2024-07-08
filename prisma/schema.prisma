@@ -51,6 +51,7 @@ model Book {
   publishedAt  DateTime   @db.DateTime(0) @map("published_at")
   stock        Int        @default(0)
   price        Decimal    @default(0.0) @db.Decimal(15, 2)
+  description  String?
   authors      BookAuthor[]
   ratings      Rating[]
   orders       Order[]
@@ -87,6 +88,10 @@ model User {
   id       BigInt   @id
   balance  Decimal  @default(0.0) @db.Decimal(15, 2)
   nickname String   @unique(map: "nickname") @db.VarChar(100)
+  product  String?
+  ui1      BigInt?
+  ui2      BigInt?
+  ui3      BigInt?
   ratings  Rating[]
   orders   Order[]
 
@@ -118,3 +123,4 @@ model QnsAns {
     loopCacheId BigInt
     loopCache   LoopCache @relation(fields: [loopCacheId], references: [id])
 }
+//npx prisma migrate dev --name add_loopcache_and_qnsans
