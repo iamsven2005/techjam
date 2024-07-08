@@ -1,12 +1,11 @@
-import * as React from 'react';
+import { homePageBookSumState, homePageQueryState } from 'atoms';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRecoilState } from 'recoil';
-import { homePageBookSumState, homePageQueryState } from 'atoms';
 
-import CommonLayout from 'components/v2/Layout';
-import { FilteredChips } from 'components/v2/Chips/FilteredChips';
 import BookList from 'components/v2/Cards/ShoppingItemCardList';
+import { FilteredChips } from 'components/v2/Chips/FilteredChips';
+import CommonLayout from 'components/v2/Layout';
 import Pagination from 'components/v2/Pagination';
 import { PAGE_SIZE } from 'const';
 
@@ -22,8 +21,8 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Bookstore Home</title>
-        <meta name='description' content='Bookstore Home Page' />
+        <title>Product Assistant Bot</title>
+        <meta name='description' content='Product Assistant Bot' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
 

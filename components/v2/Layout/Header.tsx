@@ -42,7 +42,7 @@ export default function Header(props: HeaderProps) {
 				</div>
 				<div className="navbar-center">
 					<Link href="/" className="text-xl normal-case btn btn-ghost">
-						Bookstore
+						Shop
 					</Link>
 				</div>
 				<div className="navbar-end">

@@ -51,8 +51,10 @@ export default function BookInfoSection() {
 
 	switch (bookDetailsLodable.state) {
 		case "hasValue":
+			// biome-ignore lint/correctness/noSwitchDeclarations:
 			const data = bookDetailsLodable.contents.content;
 
+			// biome-ignore lint/correctness/noSwitchDeclarations:
 			const qnsInputKeyEnter = async (
 				event: React.KeyboardEvent<HTMLInputElement>,
 			) => {
@@ -72,6 +74,7 @@ export default function BookInfoSection() {
 				setQnsAnsOutput([...qnsAnsOutput, qns, ans]);
 			};
 
+			// biome-ignore lint/correctness/noSwitchDeclarations:
 			const ansInputKeyEnter = async (
 				event: React.KeyboardEvent<HTMLInputElement>,
 				index: number,
@@ -87,11 +90,13 @@ export default function BookInfoSection() {
 				alert("Answer saved!");
 			};
 
+			// biome-ignore lint/correctness/noSwitchDeclarations:
 			const loadCache = () => {
 				const cache = getBookCacheLocal(Number(data.id));
 				setQnsList(cache?.qnsans ?? []);
 			};
 
+			// biome-ignore lint/correctness/noSwitchDeclarations:
 			const buttons = shuffleArray([
 				<Button
 					className="w-32 btn btn-info"
